@@ -9,7 +9,10 @@ const UserRouter = require('./api/User');
 const bodyParser = require('express').json;
 app.use(bodyParser());
 
+const cors = require('cors');
+
 app.use('/user', UserRouter);
+app.use(cors());
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
