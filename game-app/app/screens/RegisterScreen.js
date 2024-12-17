@@ -1,4 +1,4 @@
-﻿import React, {useState} from 'react'
+﻿import React, {useContext, useState} from 'react'
 import {View, Text, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native'
 
 import RegistrationSVG from '../../assets/images/misc/registration.svg'
@@ -12,12 +12,20 @@ import InputField from "../../components/InputField";
 import CustomButton from "../../components/CustomButton";
 import {ScrollView} from "react-native-gesture-handler";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {AuthContext} from "../context/AuthContext";
 
 const RegisterScreen = ({navigation}) => {
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
     const [dobLabel, setDobLabel] = useState('Date of Birth');
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [name, setName] = useState('');
+
+    const {register, message} = useContext(AuthContext);
 
     const [loadedFont] = useFonts({Roboto_500Medium});
     if (!loadedFont)
@@ -122,20 +130,28 @@ const RegisterScreen = ({navigation}) => {
                     </TouchableOpacity>
                 </View>
                 <Text style={styles.alternateLoginTextStyle}>Or, register with email...</Text>
-                <InputField label={'Full Name'} icon={<Ionicons name="person-outline" size={20} color="#666" style={{marginRight: 5, paddingVertical: 0}}/>} />
+                <InputField
+                    label={'Full Name'}
+                    icon={<Ionicons name="person-outline" size={20} color="#666" style={{marginRight: 5, paddingVertical: 0}}/>}
+                    onChangeText={(text) => setName(text)}
+                />
                 <InputField
                     label={'Email ID'}
                     icon={<MaterialIcons name='alternate-email' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}
                     keyboardType={'email-address'}
+                    onChangeText={(text) => setEmail(text)}
                 />
                 <InputField
                     label={'Password'}
                     icon={<Ionicons name='lock-closed-outline' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}
-                    inputType={'password'} />
+                    inputType={'password'}
+                    onChangeText={(text) => setPassword(text)}
+                />
                 <InputField
                     label={'Confirm Password'}
                     icon={<Ionicons name='lock-closed-outline' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}
                     inputType={'password'}
+                    onChangeText={(text) => setConfirmPassword(text)}
                 />
                 <View style={styles.datePickerViewStyle}>
                     <Ionicons name={'calendar-outline'} size={20} color={'#666'} style={{paddingVertical: 0, marginRight: 5}}/>
@@ -154,7 +170,10 @@ const RegisterScreen = ({navigation}) => {
                         minimumDate={new Date(1900, 0, 1)}
                     />
                 )}
-                <CustomButton label={'Register'} onPress={() => {}}/>
+                <View>
+                    <Text>{message}</Text>
+                </View>
+                <CustomButton label={'Register'} onPress={() => {register({email: email, password: password, confirmPassword: confirmPassword, name: name, dateOfBirth: dobLabel})}}/>
                 <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: 30}}>
                     <Text>Already registered?</Text>
                     <TouchableOpacity onPress={() => navigation.goBack()}>

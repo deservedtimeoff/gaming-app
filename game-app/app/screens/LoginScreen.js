@@ -1,4 +1,4 @@
-﻿import React, {useContext} from 'react'
+﻿import React, {useContext, useState} from 'react'
 import {View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity} from 'react-native'
 
 import LoginSVG from '../../assets/images/misc/login.svg'
@@ -13,7 +13,10 @@ import CustomButton from "../../components/CustomButton";
 import {AuthContext} from "../context/AuthContext";
 
 const LoginScreen = ({navigation}) => {
-    const {login} = useContext(AuthContext);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const {login, message} = useContext(AuthContext);
 
     const [loadedFont] = useFonts({Roboto_500Medium});
     if (!loadedFont)
@@ -87,15 +90,23 @@ const LoginScreen = ({navigation}) => {
                     <LoginSVG height={300} width={300} style={styles.loginImageStyle}/>
                 </View>
                 <Text style={styles.loginTextStyle}>Login</Text>
-                <InputField label={'Email ID'} icon={<MaterialIcons name='alternate-email' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}/>
+                <InputField
+                    label={'Email ID'}
+                    icon={<MaterialIcons name='alternate-email' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}
+                    onChangeText={(text) => setEmail(text)}
+                />
                 <InputField
                     label={'Password'}
                     icon={<Ionicons name='lock-closed-outline' size={20} color={'#666'} style={{marginRight: 5, paddingVertical: 0}}/>}
                     inputType={'password'}
                     fieldButtonLabel={'Forgot?'}
                     fieldButtonFunction={() => {}}
+                    onChangeText={(text) => setPassword(text)}
                 />
-                <CustomButton onPress={() => {login()}} label={'Login'}/>
+                <View>
+                    <Text>{message}</Text>
+                </View>
+                <CustomButton onPress={() => {login({email, password})}} label={'Login'}/>
                 <Text style={styles.alternateLoginTextStyle}>Or, login with ...</Text>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30}}>
                     <TouchableOpacity onPress={() => {}} style={styles.altLoginButtonStyle}>
