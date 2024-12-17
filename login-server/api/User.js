@@ -115,11 +115,7 @@ router.get('/getUser/:email', (req, res) => {
             res.json({
                 status: "SUCCESS",
                 message: "User details found!",
-                data: {
-                    name: data[0].name,
-                    email: data[0].email,
-                    dateOfBirth: data[0].dateOfBirth
-                }
+                data: data
             })
         }).catch((error) => {
             error.json({
