@@ -102,8 +102,6 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/getUser/:email', (req, res) => {
-    console.log(req.params);
-
     const {email} = req.params.email;
     if (email === "") {
         res.json({
@@ -114,10 +112,11 @@ router.get('/getUser/:email', (req, res) => {
         User.find({email}).then(data => {
             if (data)
             {
+                console.log(data);
                 res.json({
                     status: "SUCCESS",
                     message: "User details found!",
-                    data: data
+                    data: data[0]
                 })
             } else{
                 res.json({
