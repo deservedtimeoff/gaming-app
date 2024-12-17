@@ -101,10 +101,10 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser/:email', (req, res) => {
-    console.log(req.params);
+router.get('/getUser/', (req, res) => {
+    let {email} = req.query;
+    email = email.trim();
 
-    const {email} = req.params.email;
     if (email === "") {
         res.json({
             status: "FAILED",
@@ -112,15 +112,21 @@ router.get('/getUser/:email', (req, res) => {
         })
     } else {
         User.find({email}).then(data => {
-            res.json({
-                status: "SUCCESS",
-                message: "User details found!",
-                data: {
-                    name: data[0].name,
-                    email: data[0].email,
-                    dateOfBirth: data[0].dateOfBirth
-                }
-            })
+            if (data)
+            {
+                console.log(data);
+                res.json({
+                    status: "SUCCESS",
+                    message: "User details found!",
+                    data: data
+                })
+            } else{
+                res.json({
+                    status: "FAILED",
+                    message: "User details not found!"
+                })
+            }
+
         }).catch((error) => {
             error.json({
                 status: "FAILED",
