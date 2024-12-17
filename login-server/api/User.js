@@ -102,7 +102,7 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/getUser/:email', (req, res) => {
-    let {email} = req.params.email;
+    let {email} = req.query;
     email = email.trim();
 
     if (email === "") {
