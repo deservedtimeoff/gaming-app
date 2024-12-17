@@ -102,7 +102,7 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/getUser', (req, res) => {
-    let {email} = req.body;
+    let {email} = req.params.email;
     email = email.trim();
 
     console.log('I am here');
