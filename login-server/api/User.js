@@ -104,6 +104,7 @@ router.post('/signup', (req, res) => {
 router.get('/getUser/:email', (req, res) => {
     console.log(req.params);
 
+    const {email} = req.params.email;
     if (email === "") {
         res.json({
             status: "FAILED",
