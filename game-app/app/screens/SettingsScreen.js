@@ -1,20 +1,31 @@
 ﻿import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import {View, Text, StyleSheet, TouchableOpacity, TextInput} from 'react-native'
 
-const SettingsScreen = () => {
+import {FontAwesome6} from "@expo/vector-icons";
+
+const SettingsScreen = ({navigation}) => {
     return (
-        <View style={styles.settingsScreenStyle}>
-            <Text>Settings Screen</Text>
-        </View>
+        <TouchableOpacity style={{borderBottomWidth: 1, borderBottomColor: "#666", padding: 20}} onPress={() => navigation.navigate('AccountSettings')}>
+            <View style={styles.container}>
+                <Text style={styles.leftItem}>Account Settings</Text>
+                <FontAwesome6 name="chevron-right" size={20} color="#666"/>
+            </View>
+        </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
-    settingsScreenStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
+    container: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    leftItem: {
+        // Styles for the left item
+    },
+    rightItem: {
+        // Styles for the right item
+    },
 });
 
 export default SettingsScreen;

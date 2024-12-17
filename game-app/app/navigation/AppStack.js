@@ -14,6 +14,7 @@ const Drawer = createDrawerNavigator();
 
 import { useFonts, Roboto_500Medium } from '@expo-google-fonts/roboto'
 import TabNavigator from "./TabNavigator";
+import SettingsStack from "./SettingsStack";
 
 const AuthStack = () => {
     const [loadedFont] = useFonts({Roboto_500Medium});
@@ -50,9 +51,9 @@ const AuthStack = () => {
                options={{drawerIcon: ({color}) => (
                        <Ionicons name="timer-outline" size={22} color={color}/>
            )}}/>
-            <Drawer.Screen name="Settings" component={SettingsScreen}
-               options={{drawerIcon: ({color}) => (
-                       <Ionicons name="settings-outline" size={22} color={color}/>
+            <Drawer.Screen name="Settings" component={SettingsStack}
+               options={{headerShown: true, headerStyle: {backgroundColor: "#aa18ea"}, drawerIcon: ({color}) => (
+                       <Ionicons name="settings-outline" size={22} color={color} />
            )}}/>
        </Drawer.Navigator>
     )
