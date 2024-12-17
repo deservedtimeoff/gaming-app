@@ -101,6 +101,31 @@ router.post('/signup', (req, res) => {
     }
 })
 
+router.get('/getUser', (req, res) => {
+    let {email} = req.body;
+    email = email.trim();
+
+    if (email === "") {
+        res.json({
+            status: "FAILED",
+            message: "Empty email supplied!"
+        })
+    } else {
+        User.find({email}).then(data => {
+            res.json({
+                status: "SUCCESS",
+                message: "User details found!",
+                data: data
+            })
+        }).catch((error) => {
+            error.json({
+                status: "FAILED",
+                message: "An error occurred while fetching user details!"
+            })
+        })
+    }
+})
+
 router.post('/signin', (req, res) => {
     let {email, password} = req.body;
     email = email.trim();
