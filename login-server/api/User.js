@@ -102,7 +102,9 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/getUser/:email', (req, res) => {
-    const {email} = req.params.email;
+    let {email} = req.params.email;
+    email = email.trim();
+
     if (email === "") {
         res.json({
             status: "FAILED",
@@ -116,7 +118,7 @@ router.get('/getUser/:email', (req, res) => {
                 res.json({
                     status: "SUCCESS",
                     message: "User details found!",
-                    data: data[0]
+                    data: data
                 })
             } else{
                 res.json({
