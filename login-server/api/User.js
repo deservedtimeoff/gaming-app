@@ -7,10 +7,11 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt');
 
 router.post('/signup', (req, res) => {
-    let {name, email, password, dateOfBirth} = req.body;
+    let {name, email, password, confirmPassword, dateOfBirth} = req.body;
     name = name.trim();
     email = email.trim();
     password = password.trim();
+    confirmPassword = confirmPassword.trim();
     dateOfBirth = dateOfBirth.trim();
 
     if (name === "" || email === "" || password === "" || dateOfBirth === "") {
@@ -39,6 +40,11 @@ router.post('/signup', (req, res) => {
         res.json({
             status: "FAILED",
             message: "Password is too short!"
+        })
+    } else if (password != confirmPassword) {
+        res.json({
+            status: "FAILED",
+            message: "Passwords do not match!"
         })
     } else {
         // Check if user already exists
@@ -111,7 +117,7 @@ router.post('/signin', (req, res) => {
                     if (result) {
                         res.json({
                             status: "SUCCESS",
-                            message: "Signin successful",
+                            message: "Sign-in successful",
                             data: data
                         })
                     } else {
