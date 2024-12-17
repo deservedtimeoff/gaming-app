@@ -105,6 +105,8 @@ router.get('/getUser', (req, res) => {
     let {email} = req.body;
     email = email.trim();
 
+    console.log('I am here');
+
     if (email === "") {
         res.json({
             status: "FAILED",
