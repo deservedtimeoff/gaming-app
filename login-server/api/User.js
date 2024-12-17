@@ -112,11 +112,20 @@ router.get('/getUser/:email', (req, res) => {
         })
     } else {
         User.find({email}).then(data => {
-            res.json({
-                status: "SUCCESS",
-                message: "User details found!",
-                data: data
-            })
+            if (data)
+            {
+                res.json({
+                    status: "SUCCESS",
+                    message: "User details found!",
+                    data: data
+                })
+            } else{
+                res.json({
+                    status: "FAILED",
+                    message: "User details not found!"
+                })
+            }
+
         }).catch((error) => {
             error.json({
                 status: "FAILED",
