@@ -14,7 +14,9 @@ router.post('/signup', (req, res) => {
     confirmPassword = confirmPassword.trim();
     dateOfBirth = dateOfBirth.trim();
 
-    if (name === "" || email === "" || password === "" || dateOfBirth === "") {
+    console.log('I am here');
+
+    if (name === "" || email === "" || password === "" || dateOfBirth === "" || confirmPassword === "") {
         res.json({
             status: "FAILED",
             message: "Empty input fields!"
@@ -41,7 +43,7 @@ router.post('/signup', (req, res) => {
             status: "FAILED",
             message: "Password is too short!"
         })
-    } else if (password != confirmPassword) {
+    } else if (password !== confirmPassword) {
         res.json({
             status: "FAILED",
             message: "Passwords do not match!"
