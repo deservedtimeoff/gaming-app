@@ -9,8 +9,9 @@ const AccountSettingsScreen = () => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [name, setName] = useState('');
 
+    const axios = instance;
     let data = JSON.stringify({
-        "email": "jdoe@gmail.com",
+        "email": "shwarnock89@gmail.com"
     });
 
     let config = {
@@ -23,14 +24,25 @@ const AccountSettingsScreen = () => {
         data : data
     };
 
-    instance.get(url, config)
+    axios.request(config)
         .then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-            console.log('I am here');
-        }).catch((error) => {
-        console.log(error);
-    });
+            console.log(JSON.stringify(response.data));
+        })
+        .catch((error) => {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error('Error:', error.response.status);
+                console.error('Response data:', error.response.data);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Error:', error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error('Error:', error.message);
+            }
+        });
+
 
     return (
         <View>
