@@ -101,7 +101,7 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser/:email', (req, res) => {
+router.get('/getUser/', (req, res) => {
     let {email} = req.query;
     email = email.trim();
 
