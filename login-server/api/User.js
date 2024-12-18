@@ -4,7 +4,54 @@ const router = express.Router();
 const User = require('../models/User')
 
 // Password handler
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
+
+router.post('/updateUser', (req, res) => {
+    let {email, name, dateOfBirth} = req.body;
+    name = name.trim();
+    dateOfBirth = dateOfBirth.trim();
+    email = email.trim();
+
+    if (name === "" || dateOfBirth === "") {
+        res.json({
+            status: "FAILED",
+            message: "Empty input fields!"
+        });
+    } else if (!/^[a-zA-Z ]*$/.test(name))
+    {
+        res.json({
+            status: "FAILED",
+            message: "Invalid name entered!"
+        })
+    } else if (!new Date(dateOfBirth).getTime()) {
+        res.json({
+            status: "FAILED",
+            message: "Invalid date entered!"
+        })
+    } else {
+        const update = {name: name, dateOfBirth: dateOfBirth};
+        User.findOneAndUpdate({email}, update, {new: true}).then(result => {
+            if (result.length)
+            {
+                res.json({
+                    status: "SUCCESS",
+                    message: "User details updated successfully!",
+                    data: result
+                })
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "No user exists!"
+                })
+            }
+        }).catch(() => {
+            res.json({
+                status: "FAILED",
+                message: "An error occurred while updating user details!"
+            })
+        });
+    }
+})
 
 router.post('/signup', (req, res) => {
     let {name, email, password, confirmPassword, dateOfBirth} = req.body;
@@ -13,8 +60,6 @@ router.post('/signup', (req, res) => {
     password = password.trim();
     confirmPassword = confirmPassword.trim();
     dateOfBirth = dateOfBirth.trim();
-
-    console.log('I am here');
 
     if (name === "" || email === "" || password === "" || dateOfBirth === "" || confirmPassword === "") {
         res.json({
