@@ -31,7 +31,7 @@ router.post('/updateUser', (req, res) => {
     } else {
         const update = {name: name, dateOfBirth: dateOfBirth};
         User.findOneAndUpdate({email}, update, {new: true}).then(result => {
-            if (result.length)
+            if (result)
             {
                 res.json({
                     status: "SUCCESS",

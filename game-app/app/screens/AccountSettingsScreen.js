@@ -1,53 +1,67 @@
 ﻿import React, {useContext, useState} from 'react'
 
-import {View, Text } from 'react-native'
 import {AuthContext, instance} from "../context/AuthContext";
+import CustomButton from "../../components/CustomButton";
+import ToggleableTextInput from "../../components/ToggleableTextInput";
 
 const AccountSettingsScreen = () => {
-    const url = 'https://powerful-badlands-80348-953c56814af8.herokuapp.com/user/getUser';
     const {email} = useContext(AuthContext);
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [name, setName] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
 
-    const axios = instance;
-    let data = JSON.stringify({
-        "email": "shwarnock89@gmail.com"
-    });
+    if (name === '' || dateOfBirth === '' || email === '')
+    {
+        instance.get(`/user/getUser?email=${email}`)
+            .then((response) => {
+                const result = response.data;
+                const {data, message, status} = result;
 
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: 'user/getUser',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data : data
-    };
+                if (status !== "SUCCESS") {
+                    console.log(message);
+                } else {
+                    const user = data[0];
+                    setName(user.name);
+                    setDateOfBirth(user.dateOfBirth);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
-    axios.request(config)
-        .then((response) => {
-            console.log(JSON.stringify(response.data));
-        })
-        .catch((error) => {
-            if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.error('Error:', error.response.status);
-                console.error('Response data:', error.response.data);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.error('Error:', error.request);
+    const modifyUser = (credentials) => {
+        console.log(credentials);
+        instance.post('/user/updateUser', credentials).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== "SUCCESS") {
+                console.log(message);
             } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error('Error:', error.message);
+                setName(data.name);
+                setDateOfBirth(data.dateOfBirth);
             }
+        }).catch(error => {
+            console.log(error);
         });
+    }
 
+    const handleMakeChangesPressed = () => {
+        if (isEditing)
+        {
+            modifyUser({name: name, email: email, dateOfBirth: dateOfBirth});
+        }
+
+        setIsEditing(!isEditing);
+    }
 
     return (
         <View>
-            <Text>Test</Text>
-            <Text>Test</Text>
+            <ToggleableTextInput labelText="Name: " variable={name} isEditable={isEditing} onChangeText={(text) => setName(text)}/>
+            <ToggleableTextInput labelText="Emai: " variable={email} isEditable={isEditing} onChangeText={(text) => setEmail(text)}/>
+            <ToggleableTextInput labelText="Date of Birth: " variable={new Date(dateOfBirth).toLocaleDateString()} isEditable={isEditing} onChangeText={(text) => setDateOfBirth(text)}/>
+            <CustomButton label={isEditing ? 'Save Changes' : 'Make Changes'} onPress={() => {handleMakeChangesPressed()}}/>
         </View>
     )
 }
