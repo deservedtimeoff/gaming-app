@@ -1,16 +1,37 @@
 ﻿const express = require('express');
 const router = express.Router();
 
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/User')
 
 // Password handler
 const bcrypt = require('bcrypt')
+const {cookieJwtAuth} = require("./utils/checkJWT");
 
-router.post('/updateUser', (req, res) => {
+router.post('/updateUser', cookieJwtAuth, (req, res) => {
     let {email, name, dateOfBirth} = req.body;
     name = name.trim();
     dateOfBirth = dateOfBirth.trim();
     email = email.trim();
+
+    const CurrentUser = req.user;
+    if (!CurrentUser) {
+        res.json({
+            status: "FAILED",
+            message: "Failed at verifying user!"
+        });
+    }
+
+    let currentEmail = CurrentUser.email;
+    let currentName = CurrentUser.name;
+    let currentDateOfBirth = CurrentUser.dateOfBirth;
+    if (currentName === name && currentEmail === email && currentDateOfBirth === dateOfBirth) {
+        res.json({
+            status: "FAILED",
+            message: "No changes made!"
+        })
+    }
 
     if (name === "" || dateOfBirth === "") {
         res.json({
@@ -30,7 +51,7 @@ router.post('/updateUser', (req, res) => {
         })
     } else {
         const update = {name: name, dateOfBirth: dateOfBirth};
-        User.findOneAndUpdate({email}, update, {new: true}).then(result => {
+        User.findOneAndUpdate({currentEmail}, update, {new: true}).then(result => {
             if (result)
             {
                 res.json({
@@ -146,38 +167,19 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser/', (req, res) => {
-    let {email} = req.query;
-    email = email.trim();
-
-    if (email === "") {
+router.get('/getUser/', cookieJwtAuth, (req, res) => {
+    const user = req.user;
+    if (!user) {
         res.json({
             status: "FAILED",
             message: "Empty email supplied!"
         })
     } else {
-        User.find({email}).then(data => {
-            if (data)
-            {
-                console.log(data);
-                res.json({
-                    status: "SUCCESS",
-                    message: "User details found!",
-                    data: data
-                })
-            } else{
-                res.json({
-                    status: "FAILED",
-                    message: "User details not found!"
-                })
-            }
-
-        }).catch((error) => {
-            error.json({
-                status: "FAILED",
-                message: "An error occurred while fetching user details!"
-            })
-        })
+        res.json({
+            status: "SUCCESS",
+            message: "User details found!",
+            data: user
+        });
     }
 })
 
@@ -197,6 +199,11 @@ router.post('/signin', (req, res) => {
                 const hashedPassword = data[0].password;
                 bcrypt.compare(password, hashedPassword).then(result => {
                     if (result) {
+
+                        const token = jwt.sign(data[0], process.env.MY_SECRET, { expiresIn: "1h"});
+
+                        res.cookie("token", token, {httpOnly: true})
+
                         res.json({
                             status: "SUCCESS",
                             message: "Sign-in successful",
