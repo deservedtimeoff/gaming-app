@@ -7,8 +7,10 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 
 router.post('/updateUser', (req, res) => {
-    console.log('I am here');
     let {email, name, dateOfBirth} = req.body;
+    console.log(email);
+    console.log(name);
+    console.log(dateOfBirth);
     name = name.trim();
     dateOfBirth = dateOfBirth.trim();
     email = email.trim();
