@@ -201,9 +201,7 @@ router.post('/signin', (req, res) => {
                     if (result) {
                         const user = data[0];
                         delete user.password;
-                        console.log(user);
                         const token = jwt.sign(user.toObject(), process.env.MY_SECRET, { expiresIn: "1h"})
-                        console.log('I am here');
                         res.cookie("token", token, {httpOnly: true})
 
                         res.json({
