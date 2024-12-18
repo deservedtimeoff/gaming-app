@@ -2,13 +2,14 @@
 
 exports.cookieJwtAuth = (req, res, next) => {
     const token = req.cookies.token;
-    console.log(token);
-    try {
-        console.log('Here');
-        req.user = jwt.verify(token, process.env.MY_SECRET);
+    jwt.verify(token, process.env.MY_SECRET).then((data) => {
+        req.user = data;
         next();
-    } catch (err) {
-        console.log('Or here');
+    }).catch((err) => {
         res.clearCookie("token");
-    }
+        res.json({
+            status: "FAILED",
+            message: "Failed to verify cookie"
+        })
+    })
 }
