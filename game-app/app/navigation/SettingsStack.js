@@ -11,7 +11,7 @@ const SettingsStack = () => {
         <GestureHandlerRootView>
             <Stack.Navigator>
                 <Stack.Screen component={SettingsScreen} name="SettingsScreen"/>
-                <Stack.Screen component={AccountSettingsScreen} name="AccountSettings"/>
+                <Stack.Screen component={AccountSettingsScreen} name="AccountSettings" options={{title: "Account Settings"}}/>
             </Stack.Navigator>
         </GestureHandlerRootView>
     )
