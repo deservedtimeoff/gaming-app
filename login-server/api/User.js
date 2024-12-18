@@ -8,9 +8,7 @@ const bcrypt = require('bcrypt')
 
 router.post('/updateUser', (req, res) => {
     let {email, name, dateOfBirth} = req.body;
-    console.log(email);
-    console.log(name);
-    console.log(dateOfBirth);
+    console.log(req.body);
     name = name.trim();
     dateOfBirth = dateOfBirth.trim();
     email = email.trim();
