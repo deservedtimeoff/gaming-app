@@ -199,23 +199,17 @@ router.post('/signin', (req, res) => {
                 const hashedPassword = data[0].password;
                 bcrypt.compare(password, hashedPassword).then(result => {
                     if (result) {
-                        const token = jwt.sign(data[0], process.env.MY_SECRET, { expiresIn: "1h"}).then(() => {
-                            console.log('I am here');
-                            res.cookie("token", token, {httpOnly: true})
+                        const user = data[0];
+                        console.log(user);
+                        const token = jwt.sign(user, process.env.MY_SECRET, { expiresIn: "1h"})
+                        console.log('I am here');
+                        res.cookie("token", token, {httpOnly: true})
 
-                            res.json({
-                                status: "SUCCESS",
-                                message: "Sign-in successful",
-                                data: data
-                            })
-                        }).catch((error) => {
-                            console.log(error);
-                            res.json({
-                                status: "FAILED",
-                                message: "Failed to sign user!"
-                            })
+                        res.json({
+                            status: "SUCCESS",
+                            message: "Sign-in successful",
+                            data: data
                         })
-
                     } else {
                         res.json({
                             status: "FAILED",
