@@ -1,7 +1,6 @@
-﻿import React, {useContext, useEffect, useState} from 'react'
+﻿import React, {useContext, useState} from 'react'
 
 import {AuthContext, instance} from "../context/AuthContext";
-import {Text, TouchableOpacity, View} from "react-native";
 import CustomButton from "../../components/CustomButton";
 import ToggleableTextInput from "../../components/ToggleableTextInput";
 
