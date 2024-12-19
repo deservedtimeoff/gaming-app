@@ -4,10 +4,7 @@ const app = require('express')();
 const port = process.env.PORT || 3000;
 
 const cors = require('cors');
-app.use(cors({
-    origin: "http://localhost:8081",
-    credentials: true
-}))
+app.use(cors());
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
