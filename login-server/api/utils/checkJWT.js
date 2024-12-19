@@ -21,5 +21,9 @@ exports.cookieJwtAuth = (req, res, next) => {
         console.log('I am here5');
         console.log('Or here');
         res.clearCookie("token");
+        res.json({
+            status: "Failed",
+            message: "Invalid token provided"
+        })
     }
 }
