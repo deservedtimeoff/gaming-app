@@ -2,17 +2,19 @@
 
 exports.cookieJwtAuth = (req, res, next) => {
     const token = req.cookies.token;
-    console.log('I started');
-    jwt.verify(token, process.env.MY_SECRET).then((data) => {
-        req.user = data;
-        next();
-        console.log('I succeeded');
-    }).catch((err) => {
-        console.log('I Failed');
+    try {
+        if (token) {
+            req.user = jwt.verify(token, process.env.MY_SECRET);
+            next();
+        }
+        else {
+            res.json({
+                status: "FAILED",
+                message: "No token provided!"
+            })
+        }
+    } catch (err) {
+        console.log('Or here');
         res.clearCookie("token");
-        res.json({
-            status: "FAILED",
-            message: "Failed to verify cookie"
-        })
-    })
+    }
 }
