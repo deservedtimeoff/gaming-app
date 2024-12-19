@@ -3,6 +3,7 @@
 import {AuthContext, instance} from "../context/AuthContext";
 import CustomButton from "../../components/CustomButton";
 import ToggleableTextInput from "../../components/ToggleableTextInput";
+import {View} from "react-native";
 
 const AccountSettingsScreen = () => {
     const {email} = useContext(AuthContext);
@@ -12,7 +13,7 @@ const AccountSettingsScreen = () => {
 
     if (name === '' || dateOfBirth === '' || email === '')
     {
-        instance.get(`/user/getUser?email=${email}`)
+        instance.get(`/user/getUser`)
             .then((response) => {
                 const result = response.data;
                 const {data, message, status} = result;
