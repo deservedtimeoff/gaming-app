@@ -14,6 +14,16 @@ app.use((req, res, next) => {
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
+const express = require("express");
+const app = express();
+const UserRouter = require('./api/User');
+app.use('/user', UserRouter);
+
+app.use('/game', GameRouter);
+const GameRouter = require("./api/Game");
+
+
+
 // For accepting post form data
 const bodyParser = require('express').json;
 app.use(bodyParser());

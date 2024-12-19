@@ -1,14 +1,7 @@
 ﻿const express = require('express');
-
-const app = express();
-const GameRouter = require('./Game');
-app.use('/game', GameRouter);
-
 const router = express.Router();
 
 const GameModel = require('../models/GameModel')
-
-
 
 router.post('/addGame', (req, res) => {
     let {poster, title, subtitle, isFree, price} = req.body;

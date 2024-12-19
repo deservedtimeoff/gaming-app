@@ -1,8 +1,4 @@
 ﻿const express = require('express');
-const app = express();
-const UserRouter = require('./User');
-app.use('/user', UserRouter);
-
 const router = express.Router();
 
 const User = require('../models/User')
