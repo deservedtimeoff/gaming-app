@@ -158,7 +158,6 @@ router.post('/signup', (req, res) => {
                     })
             }
         }).catch(err => {
-            console.log(err);
             res.json({
                 status: "FAILED",
                 message: "An error occurred while checking for existing user account!"
