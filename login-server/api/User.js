@@ -208,6 +208,7 @@ router.post('/signin', (req, res) => {
                             message: "Sign-in successful",
                             data: data
                         })
+                        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
                     } else {
                         res.json({
                             status: "FAILED",
