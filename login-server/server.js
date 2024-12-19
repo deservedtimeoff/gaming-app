@@ -4,7 +4,7 @@ const app = require('express')();
 const port = process.env.PORT || 3000;
 
 const cors = require('cors');
-app.use(cors({credentials: true}));
+app.use(cors());
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
