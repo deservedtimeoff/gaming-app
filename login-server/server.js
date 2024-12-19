@@ -7,7 +7,7 @@ const cors = require('cors');
 app.use(cors({
     origin: 'http://localhost:8081',
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'];
+    allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
 const cookieParser = require('cookie-parser');
