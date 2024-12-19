@@ -202,7 +202,7 @@ router.post('/signin', (req, res) => {
                         const user = data[0];
                         delete user.password;
                         const token = jwt.sign(user.toObject(), process.env.MY_SECRET, { expiresIn: "1h"})
-                        res.cookie("token", token, {httpOnly: false, secure: true, SameSite: 'None'});
+                        res.cookie("token", token, {httpOnly: false, secure: true, SameSite: "none"});
                         res.json({
                             status: "SUCCESS",
                             message: "Successfully logged in",
