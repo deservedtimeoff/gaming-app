@@ -168,7 +168,7 @@ router.post('/signup', (req, res) => {
 
 router.get('/getUser', cookieJwtAuth, (req, res) => {
     const user = req.user;
-    console.log(req.header);
+    console.log(req.user)
     if (!user) {
         res.json({
             status: "FAILED",
