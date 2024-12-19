@@ -166,8 +166,8 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser/:userId', (req, res) => {
-    let {userId} = req.params;
+router.get('/getUser/', (req, res) => {
+    let {userId} = req.query;
     console.log(userId);
     userId = userId.trim();
     if (!userId) {
