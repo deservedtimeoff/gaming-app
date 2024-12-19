@@ -204,7 +204,8 @@ router.post('/signin', (req, res) => {
                         res.cookie("token", token, {httpOnly: false, secure: true})
                         res.json({
                             status: "SUCCESS",
-                            message: "Successfully logged in"
+                            message: "Successfully logged in",
+                            data: user
                         });
                     } else {
                         res.json({
