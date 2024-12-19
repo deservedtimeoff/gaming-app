@@ -1,13 +1,13 @@
 ﻿const express = require('express');
 const router = express.Router();
 
-const jwt = require('jsonwebtoken');
-
 const User = require('../models/User')
 
 // Password handler
 const bcrypt = require('bcrypt')
-const {cookieJwtAuth} = require("./utils/checkJWT");
+
+const UserRouter = require('./User');
+express().use('/user', UserRouter);
 
 router.post('/updateUser', (req, res) => {
     let {email, name, dateOfBirth} = req.body;
