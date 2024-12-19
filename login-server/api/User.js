@@ -208,6 +208,7 @@ router.post('/signin', (req, res) => {
                             message: "Successfully logged in",
                             data: user
                         });
+                        res.setHeader('Access-Control-Allow-Credentials', 'true');
                     } else {
                         res.json({
                             status: "FAILED",
