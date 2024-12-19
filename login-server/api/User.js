@@ -166,19 +166,28 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser', cookieJwtAuth, (req, res) => {
-    const user = req.user;
-    console.log(req.user)
-    if (!user) {
+router.get('/getUser/:userId', (req, res) => {
+    let {userId} = req.params;
+    userId = userId.trim();
+    if (!userId) {
         res.json({
             status: "FAILED",
             message: "Empty email supplied!"
         })
     } else {
-        res.json({
-            status: "SUCCESS",
-            message: "User details found!",
-            data: user
+        User.find({_id: userId}).then(result => {
+            if (result) {
+                res.json({
+                    status: "SUCCESS",
+                    message: "User details found!",
+                    data: result
+                })
+            } else {
+                res.json({
+                    status: "FAILED",
+                    message: "No user found!"
+                })
+            }
         });
     }
 })
@@ -200,9 +209,6 @@ router.post('/signin', (req, res) => {
                 bcrypt.compare(password, hashedPassword).then(result => {
                     if (result) {
                         const user = data[0];
-                        delete user.password;
-                        const token = jwt.sign(user.toObject(), process.env.MY_SECRET, { expiresIn: "1h"})
-                        res.cookie("token", token, {httpOnly: false, secure: true, SameSite: "none"});
                         res.json({
                             status: "SUCCESS",
                             message: "Successfully logged in",
