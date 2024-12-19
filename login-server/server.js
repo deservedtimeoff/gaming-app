@@ -1,7 +1,7 @@
 ﻿require('./config/db');
 
 const app = require('express')();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');

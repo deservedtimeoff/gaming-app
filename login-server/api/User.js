@@ -168,6 +168,7 @@ router.post('/signup', (req, res) => {
 
 router.get('/getUser/:userId', (req, res) => {
     let {userId} = req.params;
+    console.log(userId);
     userId = userId.trim();
     if (!userId) {
         res.json({
