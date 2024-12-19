@@ -4,13 +4,12 @@ const app = require('express')();
 const port = process.env.PORT || 3000;
 
 const cors = require('cors');
-app.use(cors({
-    "Access-Control-Allow-Origin": "localhost:8081"
-}));
-
-app.headers('Access-Control-Allow-Origin', '*');
-app.headers('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-app.headers('Access-Control-Allow-Headers', 'Content-Type, Origin, X-Auth-Token');
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+    res.setHeader("Access-Control-Allow-Headers", "Content-type");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    next();
+})
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
