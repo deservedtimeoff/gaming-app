@@ -7,6 +7,7 @@ const User = require('../models/User')
 
 // Password handler
 const bcrypt = require('bcrypt')
+const {cookieJwtAuth} = require("./utils/checkJWT");
 
 router.post('/updateUser', (req, res) => {
     let {email, name, dateOfBirth} = req.body;
@@ -165,7 +166,7 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser', (req, res) => {
+router.get('/getUser', cookieJwtAuth, (req, res) => {
     const user = req.user;
     console.log(req.user)
     if (!user) {
