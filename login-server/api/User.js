@@ -1,13 +1,14 @@
 ﻿const express = require('express');
+const app = express();
+const UserRouter = require('./User');
+app.use('/user', UserRouter);
+
 const router = express.Router();
 
 const User = require('../models/User')
 
 // Password handler
 const bcrypt = require('bcrypt')
-
-const UserRouter = require('./User');
-express().use('/user', UserRouter);
 
 router.post('/updateUser', (req, res) => {
     let {email, name, dateOfBirth} = req.body;
