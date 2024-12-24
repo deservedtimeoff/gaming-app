@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 export const instance = axios.create({
-    baseURL: "https://powerful-badlands-80348-953c56814af8.herokuapp.com/"
+    baseURL: "http://10.0.0.76:4000/"
 });
 
 export const AuthContext = createContext({login: () => {}, logout: () => {}});
@@ -45,7 +45,7 @@ const AuthProvider = ({children}) => {
                 }
             })
             .catch(error => {
-                console.log(error.JSON());
+                console.log(error);
             })
     }
 
@@ -60,14 +60,14 @@ const AuthProvider = ({children}) => {
                     handleMessage(message, status);
                 } else {
                     handleMessage('', '');
-                    AsyncStorage.setItem('userToken', data[0]._id);
-                    AsyncStorage.setItem('email', data[0].email);
-                    setUserToken(data[0]._id);
-                    setEmail(data[0].email);
+                    AsyncStorage.setItem('userToken', data._id);
+                    AsyncStorage.setItem('email', data.email);
+                    setUserToken(data._id);
+                    setEmail(data.email);
                 }
             })
             .catch(error => {
-            console.log(error.JSON());
+                console.log(error);
         })
     }
 

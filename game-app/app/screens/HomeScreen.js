@@ -8,7 +8,6 @@ import { useFonts, Roboto_500Medium } from '@expo-google-fonts/roboto'
 
 import Carousel from 'react-native-reanimated-carousel';
 import { Feather } from '@expo/vector-icons';
-import {freeGames, sliderData, paidGames} from "../../model/data";
 import BannerSlider from "../../components/BannerSlider";
 
 import {windowWidth} from "../utils/Dimensions";
@@ -16,8 +15,32 @@ import CustomSwitch from "../../components/CustomSwitch";
 import {useState} from "react";
 import ListItem from "../../components/ListItem";
 
+import { instance } from "../context/AuthContext";
+import {sliderData} from "../../model/data";
+
 export default function HomeScreen({navigation}) {
     const [gamesTab, setGamesTab] = useState(1);
+    const [freeGames, setFreeGames] = useState([]);
+    const [paidGames, setPaidGames] = useState([]);
+    const [doOnce, setDoOnce] = useState(true);
+    if (doOnce) {
+        instance.get('/game/getGames?isFree=true')
+            .then(response => {
+                const result = response.data;
+                console.log(result);
+                const { games } = result;
+                setPaidGames(games);
+            });
+
+        instance.get('/game/getGames?isFree=false')
+            .then(response => {
+                const result = response.data;
+                const { games } = result;
+                setFreeGames(games);
+            });
+
+        setDoOnce(false);
+    }
 
     const [loadedFont] = useFonts({Roboto_500Medium});
     if (!loadedFont)
@@ -86,12 +109,12 @@ export default function HomeScreen({navigation}) {
 
                 {gamesTab === 1 &&
                     freeGames.map(item => (
-                        <ListItem key={item.id} data={item} onPress={() => navigation.navigate('GameDetails', {title: item.title, id: item.id})}/>
+                        <ListItem key={item._id} data={item} onPress={() => navigation.navigate('GameDetails', {title: item.title, id: item.id})}/>
                     ))
                 }
                 {gamesTab === 2 &&
                     paidGames.map(item => (
-                        <ListItem key={item.id} data={item} onPress={() => navigation.navigate('GameDetails', {title: item.title, id: item.id})}/>
+                        <ListItem key={item._id} data={item} onPress={() => navigation.navigate('GameDetails', {title: item.title, id: item.id})}/>
                     ))
                 }
             </ScrollView>
