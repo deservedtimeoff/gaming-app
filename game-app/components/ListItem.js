@@ -3,7 +3,6 @@ import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native'
 import {windowWidth} from "../app/utils/Dimensions";
 
 export default function ListItem({data, onPress}) {
-    console.log(data.isFree);
     return (
         <View style={styles.outerViewStyle}>
             <View style={styles.imageViewStyle}>

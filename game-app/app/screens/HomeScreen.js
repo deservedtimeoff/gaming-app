@@ -2,8 +2,6 @@ import {Text, StyleSheet, View, TextInput, TouchableOpacity, ImageBackground} fr
 import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import userImage from '@/assets/images/user-profile.jpg'
-
 import { useFonts, Roboto_500Medium } from '@expo-google-fonts/roboto'
 
 import Carousel from 'react-native-reanimated-carousel';
@@ -12,22 +10,44 @@ import BannerSlider from "../../components/BannerSlider";
 
 import {windowWidth} from "../utils/Dimensions";
 import CustomSwitch from "../../components/CustomSwitch";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import ListItem from "../../components/ListItem";
 
-import { instance } from "../context/AuthContext";
+import {AuthContext, instance} from "../context/AuthContext";
 import {sliderData} from "../../model/data";
 
 export default function HomeScreen({navigation}) {
     const [gamesTab, setGamesTab] = useState(1);
     const [freeGames, setFreeGames] = useState([]);
     const [paidGames, setPaidGames] = useState([]);
-    const [doOnce, setDoOnce] = useState(true);
-    if (doOnce) {
+    const [name, setName] = useState('');
+    const [profileImage, setProfileImage] = useState('');
+
+    const userToken = useContext(AuthContext).userToken;
+    if (name === '' || profileImage === '')
+    {
+        instance.get(`/user/getUser?userId=${userToken}`)
+            .then((response) => {
+                const result = response.data;
+                const {data, message, status} = result;
+
+                if (status !== "SUCCESS") {
+                    console.log(message);
+                } else {
+                    const user = data;
+                    setName(user.name);
+                    setProfileImage(user.profileImage);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    if (paidGames.length === 0 && freeGames.length === 0) {
         instance.get('/game/getGames?isFree=true')
             .then(response => {
                 const result = response.data;
-                console.log(result);
                 const { games } = result;
                 setPaidGames(games);
             });
@@ -38,8 +58,6 @@ export default function HomeScreen({navigation}) {
                 const { games } = result;
                 setFreeGames(games);
             });
-
-        setDoOnce(false);
     }
 
     const [loadedFont] = useFonts({Roboto_500Medium});
@@ -60,10 +78,10 @@ export default function HomeScreen({navigation}) {
         <SafeAreaView style={styles.safeAreaViewStyle}>
             <ScrollView style={styles.scrollViewStyle}>
                 <View style={styles.textViewStyle}>
-                    <Text style={styles.nameTextStyle}>Hello Shawn Warnock</Text>
+                    <Text style={styles.nameTextStyle}>Hello {name}</Text>
                     <TouchableOpacity onPress={() => navigation.openDrawer()}>
                         <ImageBackground
-                            source={userImage}
+                            source={{uri: profileImage}}
                             style={styles.imageStyles}
                             imageStyle={{borderRadius: 25}}
                         />
