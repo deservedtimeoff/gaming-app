@@ -3,18 +3,19 @@ import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native'
 import {windowWidth} from "../app/utils/Dimensions";
 
 export default function ListItem({data, onPress}) {
+    console.log(data.isFree);
     return (
         <View style={styles.outerViewStyle}>
             <View style={styles.imageViewStyle}>
-                <Image source={data.poster} style={styles.imageStyle}></Image>
+                <Image source={{uri: data.poster}} style={styles.imageStyle}></Image>
                 <View style={{width: windowWidth -220}}>
-                    <Text style={styles.companyTextStyle}>{data.subtitle}</Text>
                     <Text numberOfLines={1} style={styles.gameTextStyle}>{data.title}</Text>
+                    <Text style={styles.companyTextStyle}>{data.subtitle}</Text>
                 </View>
             </View>
             <TouchableOpacity style={styles.touchableStyle} onPress={onPress}>
                 <Text style={styles.playTextStyle}>
-                    {data.isFree === 'Yes' ? 'Play' : data.price}
+                    {data.isFree === true ? 'Play' : data.price}
                 </Text>
             </TouchableOpacity>
         </View>

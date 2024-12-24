@@ -1,39 +1,21 @@
 ﻿const express = require('express');
 const router = express.Router();
-
-const jwt = require('jsonwebtoken');
-
 const User = require('../models/User')
 
 // Password handler
 const bcrypt = require('bcrypt')
-const {cookieJwtAuth} = require("./utils/checkJWT");
+const mongoose = require("mongoose");
 
-router.post('/updateUser', cookieJwtAuth, (req, res) => {
-    let {email, name, dateOfBirth} = req.body;
+const ObjectId = mongoose.Types.ObjectId;
+
+router.post('/updateUser', (req, res) => {
+    let {email, name, dateOfBirth, userId} = req.body;
     name = name.trim();
     dateOfBirth = dateOfBirth.trim();
     email = email.trim();
+    userId = req.user.id;
 
-    const CurrentUser = req.user;
-    if (!CurrentUser) {
-        res.json({
-            status: "FAILED",
-            message: "Failed at verifying user!"
-        });
-    }
-
-    let currentEmail = CurrentUser.email;
-    let currentName = CurrentUser.name;
-    let currentDateOfBirth = CurrentUser.dateOfBirth;
-    if (currentName === name && currentEmail === email && currentDateOfBirth === dateOfBirth) {
-        res.json({
-            status: "FAILED",
-            message: "No changes made!"
-        })
-    }
-
-    if (name === "" || dateOfBirth === "") {
+    if (name === "" || dateOfBirth === "" || email === "" || userId === "") {
         res.json({
             status: "FAILED",
             message: "Empty input fields!"
@@ -50,8 +32,8 @@ router.post('/updateUser', cookieJwtAuth, (req, res) => {
             message: "Invalid date entered!"
         })
     } else {
-        const update = {name: name, dateOfBirth: dateOfBirth};
-        User.findOneAndUpdate({currentEmail}, update, {new: true}).then(result => {
+        const update = {name: name, dateOfBirth: dateOfBirth, email: email};
+        User.findOneAndUpdate({userId}, update, {new: true}).then(result => {
             if (result)
             {
                 res.json({
@@ -166,19 +148,37 @@ router.post('/signup', (req, res) => {
     }
 })
 
-router.get('/getUser/', cookieJwtAuth, (req, res) => {
-    const user = req.user;
-    if (!user) {
+router.get('/getUser/', (req, res) => {
+    const { userId } = req.query;
+    if (!userId) {
         res.json({
             status: "FAILED",
             message: "Empty email supplied!"
         })
     } else {
-        res.json({
-            status: "SUCCESS",
-            message: "User details found!",
-            data: user
-        });
+        const o_id = new ObjectId(userId);
+        User.find({_id: o_id})
+            .then(data => {
+                if (data) {
+                    const user = data[0];
+                    res.json({
+                        status: "SUCCESS",
+                        message: "User details found!",
+                        data: user
+                    })
+                } else {
+                    res.json({
+                        status: "FAILED",
+                        message: "No user found!"
+                    });
+                }
+            })
+            .catch(err => {
+                res.json({
+                    status: "FAILED",
+                    message: "An error occurred while retreiving user!"
+                })
+            });
     }
 })
 
@@ -199,14 +199,10 @@ router.post('/signin', (req, res) => {
                 bcrypt.compare(password, hashedPassword).then(result => {
                     if (result) {
                         const user = data[0];
-                        delete user.password;
-                        const token = jwt.sign(user.toObject(), process.env.MY_SECRET, { expiresIn: "1h"})
-                        res.cookie("token", token, {httpOnly: true})
-
                         res.json({
                             status: "SUCCESS",
                             message: "Sign-in successful",
-                            data: data
+                            data: user
                         })
                     } else {
                         res.json({
