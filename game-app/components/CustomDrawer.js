@@ -1,24 +1,41 @@
-﻿import React, {useContext} from 'react'
+﻿import React, {useContext, useState} from 'react'
 import { DrawerContentScrollView, DrawerItemList} from "@react-navigation/drawer";
 import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 import ImagePath from '../assets/images/menu-bg.jpeg';
-import UseImagePath from '../assets/images/user-profile.jpg';
 
 import { useFonts, Roboto_500Medium, Roboto_400Regular } from '@expo-google-fonts/roboto'
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Ionicons} from "@expo/vector-icons";
-import {AuthContext} from "../app/context/AuthContext";
+import {AuthContext, instance} from "../app/context/AuthContext";
 
 const CustomDrawer = (props) => {
-    const {logout} = useContext(AuthContext);
+    const [userImage, setUserImage] = useState('');
+
+    const {logout, userToken} = useContext(AuthContext);
 
     const [loadedFont] = useFonts({Roboto_500Medium, Roboto_400Regular});
     if (!loadedFont)
     {
         return null;
     }
+
+    if (userImage === '') {
+        instance.get(`/user/getUser?userId=${userToken}`)
+            .then((response) => {
+                const result = response.data;
+                const {data, message, status} = result;
+
+                if (status !== "SUCCESS") {
+                    console.log(message);
+                } else {
+                    const user = data;
+                    setUserImage(user.profileImage);
+                }
+            })
+    }
+
     return (
         <View style={{flex: 1}}>
             <DrawerContentScrollView {...props}>
@@ -26,7 +43,7 @@ const CustomDrawer = (props) => {
                     source={ImagePath}
                     style={{padding: 20}}
                 >
-                    <Image style={styles.userImageStyle} source={UseImagePath}/>
+                    <Image style={styles.userImageStyle} source={{uri: userImage}}/>
                     <Text style={styles.userNameStyle}>Shawn Warnock</Text>
                     <View style={{flexDirection: 'row'}}>
                     <Text style={styles.coinStyles}>280 Coins</Text>

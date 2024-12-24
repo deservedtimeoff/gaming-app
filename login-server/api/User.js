@@ -9,30 +9,31 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
 router.post('/updateUser', (req, res) => {
-    let {email, name, dateOfBirth, userId} = req.body;
-    name = name.trim();
-    dateOfBirth = dateOfBirth.trim();
-    email = email.trim();
-    userId = req.user.id;
+    let {email, name, dateOfBirth, userId, userImage} = req.body;
+    name = name?.trim();
+    dateOfBirth = dateOfBirth?.trim();
+    email = email?.trim();
+    userId = userId?.trim();
+    userImage = userImage.trim();
 
-    if (name === "" || dateOfBirth === "" || email === "" || userId === "") {
+    if (name === "" && dateOfBirth === "" && email === "" && userId === "" && userImage === "") {
         res.json({
             status: "FAILED",
             message: "Empty input fields!"
         });
-    } else if (!/^[a-zA-Z ]*$/.test(name))
+    } else if (name !== undefined && !/^[a-zA-Z ]*$/.test(name))
     {
         res.json({
             status: "FAILED",
             message: "Invalid name entered!"
         })
-    } else if (!new Date(dateOfBirth).getTime()) {
+    } else if (dateOfBirth !== undefined && !new Date(dateOfBirth).getTime()) {
         res.json({
             status: "FAILED",
             message: "Invalid date entered!"
         })
     } else {
-        const update = {name: name, dateOfBirth: dateOfBirth, email: email};
+        const update = {name: name, dateOfBirth: dateOfBirth, email: email, profileImage: userImage};
         User.findOneAndUpdate({userId}, update, {new: true}).then(result => {
             if (result)
             {
@@ -57,14 +58,15 @@ router.post('/updateUser', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
-    let {name, email, password, confirmPassword, dateOfBirth} = req.body;
+    let {name, email, password, confirmPassword, dateOfBirth, userImage} = req.body;
     name = name.trim();
     email = email.trim();
     password = password.trim();
     confirmPassword = confirmPassword.trim();
     dateOfBirth = dateOfBirth.trim();
+    userImage = userImage.trim();
 
-    if (name === "" || email === "" || password === "" || dateOfBirth === "" || confirmPassword === "") {
+    if (name === "" || email === "" || password === "" || dateOfBirth === "" || confirmPassword === "" || userImage === "") {
         res.json({
             status: "FAILED",
             message: "Empty input fields!"
@@ -115,7 +117,8 @@ router.post('/signup', (req, res) => {
                         name,
                         email,
                         password: hashedPassword,
-                        dateOfBirth
+                        dateOfBirth,
+                        userImage
                     });
 
                     newUser.save().then(result => {
